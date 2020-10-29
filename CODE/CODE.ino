@@ -1,43 +1,39 @@
+ #include<AccelStepper.h>
 
-/*
- Stepper Motor Control - one revolution
+   // создаем экземпляр AccelStepper
 
- This program drives a unipolar or bipolar stepper motor.
- The motor is attached to digital pins 8 - 11 of the Arduino.
+   #define IN1 D4
 
- The motor should revolve one revolution in one direction, then
- one revolution in the other direction.
+   #define IN2 D3
+
+   #define IN3 D2
+
+   #define IN4 D1
+
+   AccelStepper s28BYJ48(8, IN1, IN3, IN2, IN4);
 
 
- Created 11 Mar. 2007
- Modified 30 Nov. 2009
- by Tom Igoe
 
- */
+   void setup(){
 
-#include <Stepper.h>
+   s28BYJ48.setMaxSpeed(900.0);
 
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
-// for your motor
+   s28BYJ48.setAcceleration(300.0);
 
-// initialize the stepper library on pins 8 through 11:
-Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+   s28BYJ48.setSpeed(500);
 
-void setup() {
-  // set the speed at 60 rpm:
-  myStepper.setSpeed(60);
-  // initialize the serial port:
-  Serial.begin(9600);
-}
+   s28BYJ48.moveTo(2000);
 
-void loop() {
-  // step one revolution  in one direction:
- // Serial.println("clockwise");
-  myStepper.step(stepsPerRevolution);
-  delay(1000);
+   }
 
-  // step one revolution in the other direction:
-  //Serial.println("counterclockwise");
-  myStepper.step(-stepsPerRevolution);
-  delay(1000);
-}
+
+
+   void loop(){
+
+   // Изменяем направление, если пройдено заданное число шагов
+
+   if(s28BYJ48.distanceToGo()==0)
+       s28BYJ48.moveTo(-s28BYJ48.currentPosition());
+   s28BYJ48.run();
+
+   }
